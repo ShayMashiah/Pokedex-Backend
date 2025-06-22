@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pokemon {
+  id           Int     @id
+  nameEnglish  String
+  nameJapanese String?
+  nameChinese  String?
+  nameFrench   String?
+
+  type String[]
+
+  hp        Int
+  attack    Int
+  defense   Int
+  spAttack  Int
+  spDefense Int
+  speed     Int
+
+  species     String
+  description String
+
+  evolution Json?
+  profile   Json?
+  image     Json?
+
+  ownerId Int?
+  owner   User? @relation("UserPokemons", fields: [ownerId], references: [id])
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  pokemons Pokemon[] @relation("UserPokemons")
+}
