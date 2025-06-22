@@ -10,4 +10,13 @@ async function getAllUsers(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export default {getAllUsers}
+async function addNewUser(req: Request, res: Response, next: NextFunction) {
+  try {
+    const newUser = await userService.addNewUser();
+    res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export default {getAllUsers, addNewUser}

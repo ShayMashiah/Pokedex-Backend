@@ -1,10 +1,9 @@
 import { Router } from 'express';
+import userPokemonController from '../controllers/userPokemonController';
 
 const router = Router();
 
-router.post('/', (_req, res) => {
-  res.send('Create User Pokemon link');
-});
+router.post('/', userPokemonController.addNewPokemon);
 
 router.get('/user/:userId',(_req, res) => {
   res.send('Get Pokemons By User');

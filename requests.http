@@ -12,3 +12,18 @@ GET http://localhost:3000/api/v1/pokemons/1
 # Gat all Users
 ###
 GET http://localhost:3000/api/v1/users
+
+# Add a new User
+###
+POST http://localhost:3000/api/v1/users
+
+
+# Assign Pokemon to User
+###
+POST http://localhost:3000/api/v1/userpokemons
+Content-Type: application/json
+
+{
+    "userId": 1,
+    "pokemonId": 1
+} 
