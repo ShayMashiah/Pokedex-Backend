@@ -10,5 +10,18 @@ async function getAllPokemons(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export default {
-  getAllPokemons}
+async function getPokemonById(req: Request, res: Response, next: NextFunction) {
+  const { id } = req.params;
+  try {
+    const pokemon = await pokemonService.getPokemonById(id);
+    if (!pokemon) {
+       res.status(404).json({ message: 'Pokémon not found' });
+       return;
+    }
+    res.json(pokemon);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export default {getAllPokemons, getPokemonById};

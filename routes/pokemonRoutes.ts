@@ -6,9 +6,6 @@ const router = Router();
 
 router.get('/', pokemonController.getAllPokemons);
 
-router.get('/:id', (req, res) => {
-  const { id } = req.params;
-  res.send(`Get Pokémon with ID: ${id}`);
-});
+router.get('/:id', pokemonController.getPokemonById);
 
 export default router;
