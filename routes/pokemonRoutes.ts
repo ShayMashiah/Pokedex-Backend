@@ -1,10 +1,10 @@
 import { Router } from 'express';
+import pokemonController from '../controllers/pokemonController';
+
 
 const router = Router();
 
-router.get('/', (_req, res) => {
-  res.send('Get all Pokémon');
-});
+router.get('/', pokemonController.getAllPokemons);
 
 router.get('/:id', (req, res) => {
   const { id } = req.params;
