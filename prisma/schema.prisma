@@ -36,11 +36,22 @@ model Pokemon {
   profile   Json?
   image     Json?
 
-  ownerId Int?
-  owner   User? @relation("UserPokemons", fields: [ownerId], references: [id])
+  userPokemons UserPokemon[]
+
 }
 
 model User {
   id       Int       @id @default(autoincrement())
-  pokemons Pokemon[] @relation("UserPokemons")
+  userPokemons UserPokemon[]
+}
+
+model UserPokemon {
+  userId    Int
+  pokemonId Int
+
+  user     User    @relation(fields: [userId], references: [id])
+  pokemon  Pokemon @relation(fields: [pokemonId], references: [id])
+
+  @@id([userId, pokemonId]) 
+  @@map("UserPokemon")      
 }
