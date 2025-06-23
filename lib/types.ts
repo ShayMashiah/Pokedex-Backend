@@ -1,36 +1,47 @@
-export interface Pokemon  {
+export enum PokemonType {
+  Normal = 'Normal',
+  Fire = 'Fire',
+  Water = 'Water',
+  Grass = 'Grass',
+  Electric = 'Electric',
+  Ice = 'Ice',
+  Fighting = 'Fighting',
+  Poison = 'Poison',
+  Ground = 'Ground',
+  Flying = 'Flying',
+  Psychic = 'Psychic',
+  Bug = 'Bug',
+  Rock = 'Rock',
+  Ghost = 'Ghost',
+  Dragon = 'Dragon',
+  Dark = 'Dark',
+  Steel = 'Steel',
+  Fairy = 'Fairy',
+}
+
+
+export interface Pokemon {
   id: number;
-  name: {
-    english: string;
-    japanese?: string;
-    chinese?: string;
-    french?: string;
-  };
-  type: string[];
-  base: {
-    HP: number;
-    Attack: number;
-    Defense: number;
-    "Sp. Attack": number;
-    "Sp. Defense": number;
-    Speed: number;
-  };
-  species?: string;
-  description?: string;
-  evolution?: {
-    prev?: string[];
-    next?: string[][] | [string, string][]; 
-  };
-  profile?: {
-    height?: string;
-    weight?: string;
-    egg?: string[];
-    ability: string[][] | [[string, string]]; 
-    gender: string;
-  };
-  image: {
-    sprite: string;
-    thumbnail: string;
-    hires?: string;
-  };
-};
+  nameEnglish: string;
+
+  type: PokemonType[];
+
+  hp: number;
+  attack: number;
+  defense: number;
+  spAttack: number;
+  spDefense: number;
+  speed: number;
+
+  species: string;
+  description: string;
+
+  height?: string | null;
+  weight?: string | null;
+  ability?: string[] | null; 
+  gender?: string | null;
+
+  sprite?: string | null;
+  thumbnail?: string | null;
+  hires?: string | null;
+}
