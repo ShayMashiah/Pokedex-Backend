@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import pokemonController from '../controllers/pokemonController';
-import { validatePokemonId } from '../validations/validate';
-import  {validatePokemonQueryParams}  from '../validations/validate';
+import { validatePokemonId, validateQuery } from '../validations/validate';
+import { querySchema } from '../validations/queryValidation';
 
 const router = Router();
 
 router.get('/:id',validatePokemonId, pokemonController.getPokemonById);
 
-router.get('/', validatePokemonQueryParams, pokemonController.getAllPokemons);
+router.get('/', validateQuery(querySchema), pokemonController.getAllPokemons);
 
 export default router;

@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 export async function findAllPokemons(
   sortBy: string,
@@ -10,11 +8,6 @@ export async function findAllPokemons(
   const whereClause = search
     ? `WHERE LOWER("nameEnglish") LIKE LOWER('%${search.replace(/'/g, "''")}%')`
     : '';
-
-  const allowedSortFields = ['id', 'nameEnglish', 'hp', 'attack'];
-  if (!allowedSortFields.includes(sortBy)) {
-    throw new Error(`Invalid sortBy field: ${sortBy}`);
-  }
 
   const orderBy = order.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
 
