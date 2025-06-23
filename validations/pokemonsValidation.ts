@@ -32,5 +32,4 @@ export const pokemonSchema = Joi.object({
   imageThumbnail: Joi.string().uri().optional().allow(null, ''),
   imageHires: Joi.string().uri().optional().allow(null, ''),
 
-  ownerId: Joi.number().integer().optional().allow(null)
 });
