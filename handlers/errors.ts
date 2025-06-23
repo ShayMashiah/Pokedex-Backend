@@ -34,5 +34,3 @@ export class CreationError extends Error {
     this.statusCode = 422;
   }
 }
-
-

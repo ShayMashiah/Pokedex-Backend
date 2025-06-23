@@ -38,6 +38,4 @@ async function getPokemonById(req: Request, res: Response, next: NextFunction) {
     }
   }
 }
-
-
 export default {getAllPokemons,getPokemonById};
