@@ -23,6 +23,8 @@ export function validatePokemonId(req: Request, res: Response, next: NextFunctio
       res.status(400).json({ message: 'Invalid Pokémon ID. It must be a positive integer.' });
       return;
   }
+  next();
+}
   
 export function validatePokemonQueryParams(req: Request, res: Response, next: NextFunction) {
   const { sortBy, order, search } = req.query;
