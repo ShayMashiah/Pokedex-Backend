@@ -1,10 +1,5 @@
 import Joi from 'joi';
-
-const validTypes = [
-  'Normal', 'Fire', 'Water', 'Grass', 'Electric', 'Ice',
-  'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug',
-  'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'
-];
+import { validTypes } from '../lib/constants';
 
 export const pokemonSchema = Joi.object({
   id: Joi.number().integer().required(),
