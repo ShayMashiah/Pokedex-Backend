@@ -45,3 +45,4 @@ export interface Pokemon {
   thumbnail?: string | null;
   hires?: string | null;
 }
+

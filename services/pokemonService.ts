@@ -1,5 +1,5 @@
 import * as pokemonRepository from '../repositories/pokemonRepository';
-import { NotFoundError, InternalServerError, BadRequestError } from '../handlers/errors';
+import { NotFoundError, InternalServerError, BadRequestError } from '../handlers/errors'
 import type { Pokemon } from '../lib/types';
 
 export async function getAllPokemons(
@@ -47,7 +47,22 @@ export async function getAllPokemons(
   }
 }
 
-export async function getPokemonById(id: string) {
-  const pokemons = await pokemonRepository.findAllPokemons();
-  return pokemons.find((pokemon: Pokemon) => pokemon.id === Number(id));
+export async function getPokemonById(id: number) {
+  try {
+    if (!id || typeof id !== 'number') {
+      throw new BadRequestError('Invalid Pokémon ID');
+    }
+
+    const pokemon = await pokemonRepository.findPokemonById(id);
+
+    if (!pokemon) {
+      throw new NotFoundError(`Pokémon with ID ${id} not found`);
+    }
+
+    return pokemon;
+  } catch (error) {
+    console.error('Error in getPokemonById service:', error);
+    if (typeof error === 'object' && error !== null && 'statusCode' in error) throw error;
+    throw new InternalServerError('Failed to fetch Pokémon');
+  }
 }
