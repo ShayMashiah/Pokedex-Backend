@@ -9,5 +9,4 @@ router.get('/:id',validatePokemonId, pokemonController.getPokemonById);
 
 router.get('/', validatePokemonQueryParams, pokemonController.getAllPokemons);
 
-
 export default router;
