@@ -1,0 +1,9 @@
+# Get all Pokemons
+### 
+
+GET http://localhost:3000/api/v1/pokemons
+
+
+# Get a specific Pokemon by ID
+###
+GET http://localhost:3000/api/v1/pokemons/40000

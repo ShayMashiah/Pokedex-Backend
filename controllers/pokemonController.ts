@@ -19,6 +19,25 @@ async function getAllPokemons(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export default {
-  getAllPokemons,
-};
+async function getPokemonById(req: Request, res: Response, next: NextFunction) {
+  try {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+        res.status(400).json({ message: 'Invalid Pokémon ID' });
+        return;
+    }
+
+    const pokemon = await pokemonService.getPokemonById(Number(id));
+    res.json(pokemon);
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'statusCode' in error) {
+      const err = error as { statusCode: number; message: string };
+      res.status(err.statusCode).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
+}
+
+
+export default {getAllPokemons,getPokemonById};
