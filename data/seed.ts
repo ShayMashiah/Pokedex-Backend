@@ -1,47 +1,59 @@
-import prisma from '../lib/prisma';
-import fs from 'fs/promises';
-import path from 'path';
+import { PrismaClient } from '@prisma/client';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+
+const prisma = new PrismaClient();
 
 async function main() {
-  
-    const jsonPath = path.resolve(__dirname, 'pokemon_.json');
+  const jsonPath = path.join(__dirname, './pokemon_.json');
   const fileContent = await fs.readFile(jsonPath, 'utf-8');
-  const pokemons = JSON.parse(fileContent);
+  const data = JSON.parse(fileContent);
 
+  await prisma.userPokemon.deleteMany();
   await prisma.pokemon.deleteMany();
+  await prisma.user.deleteMany();
 
-  for (const pkm of pokemons) {
-    await prisma.pokemon.create({
+  for (const p of data) {
+    const pokemon = await prisma.pokemon.create({
       data: {
-        id: pkm.id,
-        nameEnglish: pkm.name.english,
-        nameJapanese: pkm.name.japanese,
-        nameChinese: pkm.name.chinese,
-        nameFrench: pkm.name.french,
-        type: pkm.type,
-        hp: pkm.base.HP,
-        attack: pkm.base.Attack,
-        defense: pkm.base.Defense,
-        spAttack: pkm.base["Sp. Attack"],
-        spDefense: pkm.base["Sp. Defense"],
-        speed: pkm.base.Speed,
-        species: pkm.species,
-        description: pkm.description,
-        evolution: pkm.evolution || null,
-        profile: pkm.profile || null,
-        image: pkm.image || null,
+        id: p.id,
+        nameEnglish: p.name.english,
+
+        type: p.type,
+
+        hp: p.base.HP,
+        attack: p.base.Attack,
+        defense: p.base.Defense,
+        spAttack: p.base["Sp. Attack"],
+        spDefense: p.base["Sp. Defense"],
+        speed: p.base.Speed,
+
+        species: p.species ?? '',
+        description: p.description ?? '',
+
+        height: p.profile?.height ?? null,
+        weight: p.profile?.weight ?? null,
+        gender: p.profile?.gender ?? null,
+        ability1: p.profile?.ability?.[0]?.[0] ?? null,
+        ability1Hidden: p.profile?.ability?.[0]?.[1] === 'true',
+        ability2: p.profile?.ability?.[1]?.[0] ?? null,
+        ability2Hidden: p.profile?.ability?.[1]?.[1] === 'true',
+
+        sprite: p.image?.sprite ?? null,
+        thumbnail: p.image?.thumbnail ?? null,
+        hires: p.image?.hires ?? null,
+
       },
     });
   }
 
-  console.log('✅ Seed complete!');
+  console.log('✅ Database seeded successfully');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
-    process.exit(1);
+    console.error('❌ Seeding failed', e);
   })
-  .finally(async () => {
-    await prisma.$disconnect();
+  .finally(() => {
+    prisma.$disconnect();
   });
