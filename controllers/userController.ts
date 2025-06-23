@@ -6,7 +6,14 @@ async function getAllUsers(req: Request, res: Response, next: NextFunction) {
     const users = await userService.getAllUsers();
     res.json(users);
   } catch (error) {
-    next(error);
+    console.error('Failed to fetch users:', error);
+
+    if (typeof error === 'object' && error !== null && 'statusCode' in error) {
+      const err = error as { statusCode: number; message: string };
+      res.status(err.statusCode).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
   }
 }
 
@@ -15,8 +22,18 @@ async function addNewUser(req: Request, res: Response, next: NextFunction) {
     const newUser = await userService.addNewUser();
     res.status(201).json(newUser);
   } catch (error) {
-    next(error);
+    console.error('Failed to create user:', error);
+
+    if (typeof error === 'object' && error !== null && 'statusCode' in error) {
+      const err = error as { statusCode: number; message: string };
+      res.status(err.statusCode).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
   }
 }
 
-export default {getAllUsers, addNewUser}
+export default {
+  getAllUsers,
+  addNewUser,
+};

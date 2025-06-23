@@ -7,7 +7,12 @@ async function addNewPokemon(req: Request, res: Response, next: NextFunction) {
     const newPokemon = await userPokemonService.addNewPokemon(userId, pokemonId);
     res.status(201).json(newPokemon);
   } catch (error) {
-    next(error);
+    if (error && typeof error === 'object' && 'statusCode' in error) {
+      const err = error as { statusCode: number; message: string };
+      res.status(err.statusCode).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
   }
 }
 

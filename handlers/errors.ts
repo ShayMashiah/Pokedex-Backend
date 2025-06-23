@@ -26,3 +26,13 @@ export class InternalServerError extends Error {
   }
 }
 
+export class CreationError extends Error {
+  statusCode: number;
+  constructor(message: string) {
+    super(message);
+    this.name = 'CreationError';
+    this.statusCode = 422;
+  }
+}
+
+

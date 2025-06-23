@@ -8,6 +8,10 @@ export async function findAllUsers() {
 }
 
 export async function addNewUser() {
-  const newUser = await prisma.$queryRaw`INSERT INTO "User" DEFAULT VALUES;`;
+  const newUser = await prisma.user.create({
+    data: {},
+  });
+
   return newUser;
 }
+
