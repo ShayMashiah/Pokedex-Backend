@@ -10,7 +10,7 @@ export async function findByUserAndPokemon(userId: number, pokemonId: number) {
   return userPokemon.length > 0 ? userPokemon[0] : null;
 }
 
-export async function addNewPokemon(userId: number, pokemonId: number) {
+export async function addNewPokemonToMyPokemons(userId: number, pokemonId: number) {
   const newPokemon = await prisma.userPokemon.create({
     data: {
       userId,

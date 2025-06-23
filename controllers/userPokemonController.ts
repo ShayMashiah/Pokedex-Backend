@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import * as userPokemonService from '../services/userPokemonService';
 
-async function addNewPokemon(req: Request, res: Response, next: NextFunction) {
+async function addNewPokemonToMyPokemons(req: Request, res: Response, next: NextFunction) {
   const { userId, pokemonId } = req.body;
   try {
-    const newPokemon = await userPokemonService.addNewPokemon(userId, pokemonId);
+    const newPokemon = await userPokemonService.addNewPokemonToMyPokemons(userId, pokemonId);
     res.status(201).json(newPokemon);
   } catch (error) {
     if (error && typeof error === 'object' && 'statusCode' in error) {
@@ -16,4 +16,4 @@ async function addNewPokemon(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export default { addNewPokemon };
+export default { addNewPokemonToMyPokemons };
