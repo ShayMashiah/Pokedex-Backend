@@ -17,6 +17,15 @@ export function validate(schema: ObjectSchema) {
   };
 }
 
+export function validatePokemonId(req: Request, res: Response, next: NextFunction) {
+  const { id } = req.params;
+  if (!/^\d+$/.test(id)) {
+      res.status(400).json({ message: 'Invalid Pokémon ID. It must be a positive integer.' });
+      return;
+  }
+  next();
+}
+  
 export function validatePokemonQueryParams(req: Request, res: Response, next: NextFunction) {
   const { sortBy, order, search } = req.query;
 
@@ -42,7 +51,5 @@ export function validatePokemonQueryParams(req: Request, res: Response, next: Ne
     }
 
   }
-
-
   next();
 }
