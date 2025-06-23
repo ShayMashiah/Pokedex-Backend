@@ -66,8 +66,3 @@ export async function getPokemonById(id: number) {
     throw new InternalServerError('Failed to fetch Pokémon');
   }
 }
-
-export async function getPokemonById(id: string) {
-  const pokemons = await pokemonRepository.findAllPokemons();
-  return pokemons.find((pokemon: Pokemon) => pokemon.id === Number(id));
-}
