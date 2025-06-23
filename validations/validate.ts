@@ -13,5 +13,27 @@ export function validate(schema: ObjectSchema) {
     }
     req.body = value;
     next();
+  }
+}
+
+export function validateQuery(schema: ObjectSchema) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const { error } = schema.validate(req.query);
+
+    if (error) {
+       res.status(400).json({ message: error.details[0].message });
+       return;
+    }
+
+    next();
   };
+}
+
+export function validatePokemonId(req: Request, res: Response, next: NextFunction) {
+  const { id } = req.params;
+  if (!/^\d+$/.test(id)) {
+      res.status(400).json({ message: 'Invalid Pokémon ID. It must be a positive integer.' });
+      return;
+  }
+  next();
 }
