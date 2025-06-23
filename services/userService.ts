@@ -9,8 +9,10 @@ export async function getAllUsers() {
     }
     return users;
   } catch (error) {
+    if (error instanceof NotFoundError) {
+      throw error;
+    }
     console.error('Error in getAllUsers service:', error);
-    if (error && typeof error === 'object' && 'statusCode' in error) throw error;
     throw new InternalServerError('Failed to fetch users');
   }
 }
@@ -23,8 +25,10 @@ export async function addNewUser() {
     }
     return newUser;
   } catch (error) {
+    if (error instanceof CreationError) {
+      throw error;
+    }
     console.error('Error in addNewUser service:', error);
-    if (error && typeof error === 'object' && 'statusCode' in error) throw error;
     throw new CreationError('Failed to create new user');
   }
 }
