@@ -1,10 +1,11 @@
 import { Router } from 'express';
+import userPokemonController from '../controllers/userPokemonController';
+import { validate } from '../validations/validate';
+import { userPokemonSchema } from '../validations/userPokemonValidation';
 
 const router = Router();
 
-router.post('/', (_req, res) => {
-  res.send('Create User Pokemon link');
-});
+router.post('/',validate(userPokemonSchema), userPokemonController.addNewPokemonToMyPokemons);
 
 router.get('/user/:userId',(_req, res) => {
   res.send('Get Pokemons By User');
