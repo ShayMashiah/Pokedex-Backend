@@ -38,4 +38,3 @@ export async function getPokemonById(id: number): Promise<Pokemon> {
     throw new InternalServerError('Failed to fetch Pokémon');
   }
 }
-
