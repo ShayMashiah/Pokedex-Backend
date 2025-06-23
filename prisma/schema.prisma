@@ -13,32 +13,59 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PokemonType {
+  Normal
+  Fire
+  Water
+  Electric
+  Grass
+  Ice
+  Fighting
+  Poison
+  Ground
+  Flying
+  Psychic
+  Bug
+  Rock
+  Ghost
+  Dark
+  Dragon
+  Steel
+  Fairy
+}
+
+
 model Pokemon {
   id           Int     @id
   nameEnglish  String
-  nameJapanese String?
-  nameChinese  String?
-  nameFrench   String?
 
-  type String[]
+  type         PokemonType[]
 
-  hp        Int
-  attack    Int
-  defense   Int
-  spAttack  Int
-  spDefense Int
-  speed     Int
+  hp           Int
+  attack       Int
+  defense      Int
+  spAttack     Int
+  spDefense    Int
+  speed        Int
 
-  species     String
-  description String
+  species      String
+  description  String
 
-  evolution Json?
-  profile   Json?
-  image     Json?
+  height       String?
+  weight       String?
+  gender       String?
+  ability1     String?
+  ability1Hidden Boolean? @default(false)
+  ability2     String?
+  ability2Hidden Boolean? @default(false)
+
+  sprite       String?
+  thumbnail    String?
+  hires        String?
 
   userPokemons UserPokemon[]
-
 }
+
 
 model User {
   id       Int       @id @default(autoincrement())
