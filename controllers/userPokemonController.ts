@@ -22,6 +22,19 @@ async function addNewPokemonToMyPokemons(req: Request, res: Response, next: Next
   }
 }
 
-export default {
-  addNewPokemonToMyPokemons,
-};
+async function getAllPokemonsByUserId(req: Request, res: Response, next: NextFunction) {
+    const userId = parseInt(req.params.userId, 10);
+    try {
+        const pokemons = await userPokemonService.getAllPokemonsByUserId(userId);
+        res.status(200).json(pokemons);
+    } catch (error) {
+        if (error instanceof NotFoundError) {
+            res.status(404).json({ message: error.message });
+            return;
+        }
+        console.error('Error in getAllPokemonsByUserId:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+export default {addNewPokemonToMyPokemons,getAllPokemonsByUserId};

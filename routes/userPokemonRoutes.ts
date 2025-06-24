@@ -7,9 +7,7 @@ const router = Router();
 
 router.post('/',validate(userPokemonSchema), userPokemonController.addNewPokemonToMyPokemons);
 
-router.get('/user/:userId',(_req, res) => {
-  res.send('Get Pokemons By User');
-});
+router.get('/:userId', userPokemonController.getAllPokemonsByUserId);
 
 
 export default router;
