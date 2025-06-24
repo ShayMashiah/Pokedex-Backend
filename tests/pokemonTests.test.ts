@@ -12,12 +12,19 @@ describe('Pokemons API Integration Test', () => {
     await prisma.$disconnect();
   });
 
-  it('should get all pokemons', async () => {
-    const res = await request(app).get('/api/v1/pokemons');
-    expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBeGreaterThan(0);
-    expect(res.body.length).toBe(809);
-  });
+    it('should get all pokemons', async () => {
+        const res = await request(app).get('/api/v1/pokemons');
+        expect(res.statusCode).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThan(0);
+        expect(res.body.length).toBe(809);
+    });
+
+    it('should get a pokemon by ID', async () => {
+        const res = await request(app).get('/api/v1/pokemons/1');
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toHaveProperty('id', 1);
+        expect(res.body).toHaveProperty('nameEnglish', 'Bulbasaur');
+    });
 
 });
