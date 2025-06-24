@@ -5,7 +5,6 @@ import { main as seedDatabase } from '../data/seed';
 
 describe('Pokemons API Integration Test', () => {
   beforeAll(async () => {
-    await prisma.pokemon.deleteMany();
     await seedDatabase();
   });
 
@@ -13,7 +12,7 @@ describe('Pokemons API Integration Test', () => {
     await prisma.$disconnect();
   });
 
-  describe('should get all pokemons', async () => {
+  it('should get all pokemons', async () => {
     const res = await request(app).get('/api/v1/pokemons');
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
