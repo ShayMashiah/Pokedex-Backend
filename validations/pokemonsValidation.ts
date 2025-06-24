@@ -1,17 +1,14 @@
 import Joi from 'joi';
+import { PokemonType } from '../lib/types';
 
-const validTypes = [
-  'Normal', 'Fire', 'Water', 'Grass', 'Electric', 'Ice',
-  'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug',
-  'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'
-];
+const pokemonTypes = Object.values(PokemonType);
 
 export const pokemonSchema = Joi.object({
   id: Joi.number().integer().required(),
 
   nameEnglish: Joi.string().required(),
 
-  type: Joi.array().items(Joi.string().valid(...validTypes)).required(),
+  type: Joi.array().items(Joi.string().valid(...pokemonTypes)).required(),
 
   hp: Joi.number().integer().required(),
   attack: Joi.number().integer().required(),

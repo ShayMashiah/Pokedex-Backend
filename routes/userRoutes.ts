@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { pokemonSchema } from '../validations/pokemonsValidation';
 import { validate } from '../validations/validate';
 import userController from '../controllers/userController';
 import { userSchema } from '../validations/userValidation';

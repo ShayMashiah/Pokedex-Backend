@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma';
 
-const prisma = new PrismaClient();
 
 export async function findAllUsers() {
   const users = await prisma.$queryRaw`SELECT * FROM "User"`;

@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 export async function findByUserAndPokemon(userId: number, pokemonId: number) {
   const userPokemon = await prisma.$queryRaw`
