@@ -27,4 +27,18 @@ describe('Pokemons API Integration Test', () => {
         expect(res.body).toHaveProperty('nameEnglish', 'Bulbasaur');
     });
 
+    it('should return 404 for a non-existent pokemon', async () => {
+        const res = await request(app).get('/api/v1/pokemons/9999');
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toContain('Pokémon with ID 9999 not found');
+    });
+
+    it('should return 400 for invalid pokemon ID', async () => {
+        const res = await request(app).get('/api/v1/pokemons/invalid');
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toContain('Invalid Pokémon ID. It must be a positive integer.');
+    });
+
+    
+
 });
