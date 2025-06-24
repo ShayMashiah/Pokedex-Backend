@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import prisma from '../lib/prisma';
 
-const prisma = new PrismaClient();
 
-async function main() {
+
+export async function main() {
   const jsonPath = path.join(__dirname, './pokemon_.json');
   const fileContent = await fs.readFile(jsonPath, 'utf-8');
   const data = JSON.parse(fileContent);
