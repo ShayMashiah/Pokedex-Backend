@@ -18,6 +18,7 @@ export enum PokemonType {
   Steel = 'Steel',
   Fairy = 'Fairy',
 }
+export type PokemonTypeKey = keyof typeof PokemonType;
 
 
 export interface Pokemon {
