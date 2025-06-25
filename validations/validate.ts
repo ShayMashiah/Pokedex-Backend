@@ -37,3 +37,17 @@ export function validatePokemonId(req: Request, res: Response, next: NextFunctio
   }
   next();
 }
+
+export function validateUserIdParam(req: Request, res: Response, next: NextFunction) {
+  const { userId } = req.params;
+
+  const id = Number(userId);
+
+  if (!userId || isNaN(id) || id <= 0 || !Number.isInteger(id)) {
+     res.status(400).json({ error: "Invalid userId parameter" });
+     return;
+  }
+
+  next();
+}
+
