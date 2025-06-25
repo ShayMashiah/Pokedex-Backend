@@ -1,9 +1,11 @@
 import * as userRepository from '../repositories/userRepositry';
 import { NotFoundError, InternalServerError, CreationError } from '../handlers/errors';
+import { User } from '../lib/types';
 
-export async function getAllUsers() {
+
+export async function getAllUsers(): Promise<User[]>  {
   try {
-    const users = await userRepository.findAllUsers();
+    const users : User[] = await userRepository.findAllUsers();
     if (!users || users.length === 0) {
       throw new NotFoundError('No users found');
     }

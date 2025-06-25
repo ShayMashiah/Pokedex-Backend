@@ -1,10 +1,11 @@
 import prisma from '../lib/prisma';
+import type { Pokemon } from '../lib/types';
 
 export async function findAllPokemons(
   sortBy: string,
   order: 'asc' | 'desc',
   search?: string
-) {
+): Promise<Pokemon[]>  {
   const whereClause = search
     ? `WHERE LOWER("nameEnglish") LIKE LOWER('%${search.replace(/'/g, "''")}%')`
     : '';
@@ -18,10 +19,10 @@ export async function findAllPokemons(
   `;
 
   const pokemons = await prisma.$queryRawUnsafe(query);
-  return pokemons;
+  return pokemons as Pokemon[];
 }
 
 export async function findPokemonById(id: number) {
-  const pokemon = await prisma.$queryRaw`SELECT * FROM "Pokemon" WHERE id = ${id}`;
+  const pokemon = await prisma.$queryRaw<Pokemon[]>`SELECT * FROM "Pokemon" WHERE id = ${id}`;
   return pokemon[0] ?? null;
 }
