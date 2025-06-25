@@ -51,3 +51,21 @@ export function validateUserIdParam(req: Request, res: Response, next: NextFunct
   next();
 }
 
+export function validateSearchParam(req: Request, res: Response, next: NextFunction) {
+  const { search } = req.query;
+  if (!search) {
+    return next();
+  }
+
+  if (typeof search === "string") {
+    const isValid = /^[a-zA-Z\s\-']+$/.test(search);
+    if (!isValid) {
+        res.status(400).json({
+        error: "Search query contains invalid characters. Only letters are allowed.",
+      });
+      return;
+    }
+  }
+
+  next();
+}

@@ -112,4 +112,31 @@ describe('userPokemon API Integration Test', () => {
         expect(res.body.error).toBe('Invalid userId parameter');
     });
 
+    it('should return Pokemons filtered by search term', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?search=Bulbasaur`);
+        expect(res.statusCode).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThan(0);
+        expect(res.body[0]).toHaveProperty('nameEnglish', 'Bulbasaur');
+    });
+
+    it('should return not found error for search term that does not match any Pokemons', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?search=NonExistentPokemon`);
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe(`No Pokemons found for user with ID ${testUserId}.`);
+    });
+
+    it('should return all Pokemons for user when search term is empty', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?search=`);
+        expect(res.statusCode).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThan(0);
+    });
+
+    it('should return 400 for invalid search term', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?search=12345`);
+        expect(res.statusCode).toBe(400);
+        expect(res.body.error).toBe('Search query contains invalid characters. Only letters are allowed.');
+    });
+
 });
