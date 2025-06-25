@@ -26,13 +26,13 @@ export async function addNewPokemonToMyPokemons(userId: string, pokemonId: strin
   return await userPokemonRepository.addNewPokemonToMyPokemons(userIdNum, pokemonIdNum);
 }
 
-export async function getAllPokemonsByUserId(userId: number) {
+export async function getAllPokemonsByUserId(userId: number, search?: string) {
   const user = await userRepository.findUserById(userId);
   if (!user) {
     throw new NotFoundError(`User with ID ${userId} not found.`);
   }
 
-  const pokemons = await userPokemonRepository.getAllPokemonsByUserId(userId);
+  const pokemons = await userPokemonRepository.getAllPokemonsByUserId(userId, search);
     if (!pokemons || pokemons.length === 0) {
         throw new NotFoundError(`No Pokemons found for user with ID ${userId}.`);
     }

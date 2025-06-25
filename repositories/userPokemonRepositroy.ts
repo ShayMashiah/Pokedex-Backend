@@ -20,11 +20,21 @@ export async function addNewPokemonToMyPokemons(userId: number, pokemonId: numbe
   return newPokemon;
 }
 
-export async function getAllPokemonsByUserId(userId: number) {
-  const pokemons = await prisma.$queryRaw<Pokemon[]>`
-    SELECT p.* FROM "UserPokemon" up
-    JOIN "Pokemon" p ON up."pokemonId" = p.id
-    WHERE up."userId" = ${userId}
-  `;
-  return pokemons;
+export async function getAllPokemonsByUserId(userId: number, search?: string) {
+  if (search && search.trim() !== "") {
+    const pokemons = await prisma.$queryRaw<Pokemon[]>`
+      SELECT p.* FROM "UserPokemon" up
+      JOIN "Pokemon" p ON up."pokemonId" = p.id
+      WHERE up."userId" = ${userId}
+      AND p."nameEnglish" ILIKE '%' || ${search} || '%'
+    `;
+    return pokemons;
+  } else {
+    const pokemons = await prisma.$queryRaw<Pokemon[]>`
+      SELECT p.* FROM "UserPokemon" up
+      JOIN "Pokemon" p ON up."pokemonId" = p.id
+      WHERE up."userId" = ${userId}
+    `;
+    return pokemons;
+  }
 }

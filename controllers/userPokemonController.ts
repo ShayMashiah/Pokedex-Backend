@@ -24,8 +24,9 @@ async function addNewPokemonToMyPokemons(req: Request, res: Response, next: Next
 
 async function getAllPokemonsByUserId(req: Request, res: Response, next: NextFunction) {
     const userId = +req.params.userId;
+    const search = req.query.search as string | undefined;
     try {
-        const pokemons = await userPokemonService.getAllPokemonsByUserId(userId);
+        const pokemons = await userPokemonService.getAllPokemonsByUserId(userId, search);
         res.status(200).json(pokemons);
     } catch (error) {
         if (error instanceof NotFoundError) {
