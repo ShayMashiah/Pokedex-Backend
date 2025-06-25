@@ -23,7 +23,7 @@ async function addNewPokemonToMyPokemons(req: Request, res: Response, next: Next
 }
 
 async function getAllPokemonsByUserId(req: Request, res: Response, next: NextFunction) {
-    const userId = parseInt(req.params.userId, 10);
+    const userId = +req.params.userId;
     try {
         const pokemons = await userPokemonService.getAllPokemonsByUserId(userId);
         res.status(200).json(pokemons);
