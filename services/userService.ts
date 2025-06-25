@@ -1,4 +1,5 @@
 import * as userRepository from '../repositories/userRepositry';
+import { User } from '../lib/types';
 import { NotFoundError, CreationError } from '../handlers/errors';
 
 export async function getAllUsers() {

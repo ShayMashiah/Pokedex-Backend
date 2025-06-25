@@ -46,3 +46,12 @@ export interface Pokemon {
   thumbnail?: string | null;
   hires?: string | null;
 }
+
+export interface User {
+    id: number;
+}
+
+export interface userPokemon {
+    userId: number;
+    pokemonId: number;
+}

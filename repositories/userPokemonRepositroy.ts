@@ -1,7 +1,8 @@
+import { userPokemon, Pokemon } from '../lib/types';
 import prisma from '../lib/prisma';
 
-export async function findByUserAndPokemon(userId: number, pokemonId: number) {
-  const userPokemon = await prisma.$queryRaw`
+export async function findByUserAndPokemon(userId: number, pokemonId: number): Promise<userPokemon | null> {
+  const userPokemon = await prisma.$queryRaw<userPokemon[]>`
     SELECT * FROM "UserPokemon" 
     WHERE "userId" = ${userId} AND "pokemonId" = ${pokemonId}
   `;
@@ -17,4 +18,13 @@ export async function addNewPokemonToMyPokemons(userId: number, pokemonId: numbe
   });
 
   return newPokemon;
+}
+
+export async function getAllPokemonsByUserId(userId: number) {
+  const pokemons = await prisma.$queryRaw<Pokemon[]>`
+    SELECT p.* FROM "UserPokemon" up
+    JOIN "Pokemon" p ON up."pokemonId" = p.id
+    WHERE up."userId" = ${userId}
+  `;
+  return pokemons;
 }
