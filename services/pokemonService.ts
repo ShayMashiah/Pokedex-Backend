@@ -5,13 +5,17 @@ import type { Pokemon } from '../lib/types';
 export async function getAllPokemons(
   sortBy: string = 'id',
   order: 'asc' | 'desc' = 'asc',
-  search?: string
-): Promise<Pokemon[]> {
-  const pokemons = await pokemonRepository.findAllPokemons(sortBy, order, search);
-  if (!pokemons || pokemons.length === 0) {
+  search?: string,
+  limit: number = 10,
+  page: number = 1
+): Promise<{ data: Pokemon[]; totalCount: number }> {
+  const result = await pokemonRepository.findAllPokemons(sortBy, order, search, limit, page);
+
+  if (!result.data || result.data.length === 0) {
     throw new NotFoundError(search ? `No Pokémons found matching '${search}'` : 'No Pokémons found');
   }
-  return pokemons;
+
+  return result;
 }
 
 export async function getPokemonById(id: number): Promise<Pokemon> {

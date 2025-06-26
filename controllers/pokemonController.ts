@@ -5,13 +5,23 @@ import { BadRequestError, NotFoundError } from '../handlers/errors';
 
 async function getAllPokemons(req: Request, res: Response, next: NextFunction) {
   try {
-    const sortBy = req.query.sortBy as string || 'id';
-    const order = req.query.order as 'asc' | 'desc' || 'asc';
+    const sortBy = (req.query.sortBy as string) || 'id';
+    const order = (req.query.order as 'asc' | 'desc') || 'asc';
     const search = req.query.search as string | undefined;
+    const limit = Number(req.query.limit) || 10;
+    const page = Number(req.query.page) || 1;
 
-    const pokemons = await pokemonService.getAllPokemons(sortBy, order, search);
-    res.json(pokemons);
-    } catch (error) {
+    const { data, totalCount } = await pokemonService.getAllPokemons(sortBy, order, search, limit, page);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.json({
+      data,
+      totalCount,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
     if (error instanceof BadRequestError) {
       res.status(400).json({ message: error.message });
       return;
@@ -23,6 +33,7 @@ async function getAllPokemons(req: Request, res: Response, next: NextFunction) {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 }
+
 
 async function getPokemonById(req: Request, res: Response, next: NextFunction) {
   try {
