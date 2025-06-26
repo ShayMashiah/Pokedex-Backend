@@ -4,22 +4,37 @@ import type { Pokemon } from '../lib/types';
 export async function findAllPokemons(
   sortBy: string,
   order: 'asc' | 'desc',
-  search?: string
-): Promise<Pokemon[]>  {
-  const whereClause = search
+  search?: string,
+  limit: number = 10,
+  page: number = 1
+): Promise<{ data: Pokemon[]; totalCount: number }>  {
+  const offset = (page - 1) * limit;
+  const searchClause = search
     ? `WHERE LOWER("nameEnglish") LIKE LOWER('%${search.replace(/'/g, "''")}%')`
     : '';
 
-  const orderBy = order.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
-
   const query = `
     SELECT * FROM "Pokemon"
-    ${whereClause}
-    ORDER BY "${sortBy}" ${orderBy}
+    ${searchClause}
+    ORDER BY "${sortBy}" ${order}
+    LIMIT ${limit}
+    OFFSET ${offset}
   `;
 
-  const pokemons = await prisma.$queryRawUnsafe(query);
-  return pokemons as Pokemon[];
+  const countQuery = `
+    SELECT COUNT(*)::int as count FROM "Pokemon"
+    ${searchClause}
+  `;
+
+  const [pokemons, countResult] = await Promise.all([
+    prisma.$queryRawUnsafe<Pokemon[]>(query),
+    prisma.$queryRawUnsafe<{ count: number }[]>(countQuery),
+  ]);
+
+  return {
+    data: pokemons,
+    totalCount: countResult[0].count,
+  };
 }
 
 export async function findPokemonById(id: number) {

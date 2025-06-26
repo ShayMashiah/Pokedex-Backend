@@ -15,9 +15,11 @@ describe('Pokemons API Integration Test', () => {
     it('should get all pokemons', async () => {
         const res = await request(app).get('/api/v1/pokemons');
         expect(res.statusCode).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeGreaterThan(0);
-        expect(res.body.length).toBe(809);
+        expect(res.body).toHaveProperty('data');
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBeGreaterThan(0);
+        expect(res.body).toHaveProperty('totalCount');
+        expect(res.body.totalCount).toBeGreaterThan(0);
     });
 
     it('should get a pokemon by ID', async () => {
@@ -42,9 +44,10 @@ describe('Pokemons API Integration Test', () => {
     it('should search pokemons by name', async () => {
         const res = await request(app).get('/api/v1/pokemons?search=Bulbasaur');
         expect(res.statusCode).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBe(1);
-        expect(res.body[0]).toHaveProperty('nameEnglish', 'Bulbasaur');
+        expect(res.body).toHaveProperty('data');
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBe(1);
+        expect(res.body.data[0]).toHaveProperty('nameEnglish', 'Bulbasaur');
     });
 
     it('should return 404 for search with no results', async () => {
@@ -56,33 +59,33 @@ describe('Pokemons API Integration Test', () => {
     it('should sort pokemons by name in ascending order', async () => {
         const res = await request(app).get('/api/v1/pokemons?sortBy=nameEnglish&order=asc');
         expect(res.statusCode).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeGreaterThan(0);
-        expect(res.body[0].nameEnglish).toBe('Abomasnow'); 
+        expect(res.body).toHaveProperty('data');
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data[0].nameEnglish).toBe('Abomasnow'); 
     });
 
     it('should sort pokemons by name in descending order', async () => {
         const res = await request(app).get('/api/v1/pokemons?sortBy=nameEnglish&order=desc');
         expect(res.statusCode).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeGreaterThan(0);
-        expect(res.body[0].nameEnglish).toBe('Zygarde'); 
+        expect(res.body).toHaveProperty('data');
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data[0].nameEnglish).toBe('Zygarde'); 
     });
 
     it('should sort pokemons by hp in ascending order', async () => {
         const res = await request(app).get('/api/v1/pokemons?sortBy=hp&order=asc');
         expect(res.statusCode).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeGreaterThan(0);
-        expect(res.body[0].hp).toBe(1); 
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBeGreaterThan(0);
+        expect(res.body.data[0].hp).toBe(1); 
     });
 
     it('should sort pokemons by hp in descending order', async () => {
         const res = await request(app).get('/api/v1/pokemons?sortBy=hp&order=desc');
         expect(res.statusCode).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeGreaterThan(0);
-        expect(res.body[0].hp).toBe(255); 
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBeGreaterThan(0);
+        expect(res.body.data[0].hp).toBe(255); 
     });
 
     it('should return 400 for invalid sortBy parameter', async () => {
@@ -106,8 +109,8 @@ describe('Pokemons API Integration Test', () => {
     it('should return 200 for empty query parameters', async () => {
         const res = await request(app).get('/api/v1/pokemons?search=');
         expect(res.statusCode).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeGreaterThan(0);
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBeGreaterThan(0);
     });
 
 });
