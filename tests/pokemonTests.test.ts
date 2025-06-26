@@ -36,7 +36,7 @@ describe('Pokemons API Integration Test', () => {
     it('should return 400 for invalid pokemon ID', async () => {
         const res = await request(app).get('/api/v1/pokemons/invalid');
         expect(res.statusCode).toBe(400);
-        expect(res.body.message).toContain('Invalid Pokémon ID. It must be a positive integer.');
+        expect(res.body.message).toContain('Invalid ID');
     });
 
     it('should search pokemons by name', async () => {
@@ -103,14 +103,11 @@ describe('Pokemons API Integration Test', () => {
         expect(res.body.message).toContain('is not allowed');
     });
 
-    it('should return 400 for empty query parameters', async () => {
+    it('should return 200 for empty query parameters', async () => {
         const res = await request(app).get('/api/v1/pokemons?search=');
-        expect(res.statusCode).toBe(400);
-        expect(res.body.message).toContain('is not allowed to be empty');
+        expect(res.statusCode).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThan(0);
     });
-
-
-
-    
 
 });

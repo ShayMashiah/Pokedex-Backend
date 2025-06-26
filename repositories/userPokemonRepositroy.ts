@@ -1,5 +1,6 @@
 import { userPokemon, Pokemon } from '../lib/types';
 import prisma from '../lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export async function findByUserAndPokemon(userId: number, pokemonId: number): Promise<userPokemon | null> {
   const userPokemon = await prisma.$queryRaw<userPokemon[]>`
@@ -21,20 +22,16 @@ export async function addNewPokemonToMyPokemons(userId: number, pokemonId: numbe
 }
 
 export async function getAllPokemonsByUserId(userId: number, search?: string) {
-  if (search && search.trim() !== "") {
-    const pokemons = await prisma.$queryRaw<Pokemon[]>`
-      SELECT p.* FROM "UserPokemon" up
-      JOIN "Pokemon" p ON up."pokemonId" = p.id
-      WHERE up."userId" = ${userId}
-      AND p."nameEnglish" ILIKE '%' || ${search} || '%'
-    `;
-    return pokemons;
-  } else {
-    const pokemons = await prisma.$queryRaw<Pokemon[]>`
-      SELECT p.* FROM "UserPokemon" up
-      JOIN "Pokemon" p ON up."pokemonId" = p.id
-      WHERE up."userId" = ${userId}
-    `;
-    return pokemons;
-  }
+  const searchCondition = search?.trim()
+    ? Prisma.sql`AND p."nameEnglish" ILIKE '%' || ${search} || '%'`
+    : Prisma.empty;
+
+  const pokemons = await prisma.$queryRaw<Pokemon[]>`
+    SELECT p.* FROM "UserPokemon" up
+    JOIN "Pokemon" p ON up."pokemonId" = p.id
+    WHERE up."userId" = ${userId}
+    ${searchCondition}
+  `;
+
+  return pokemons;
 }

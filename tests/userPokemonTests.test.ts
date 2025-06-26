@@ -97,19 +97,19 @@ describe('userPokemon API Integration Test', () => {
     it('should return 400 for invalid userId parameter', async () => {
         const res = await request(app).get('/api/v1/userpokemons/abc');
         expect(res.statusCode).toBe(400);
-        expect(res.body.error).toBe('Invalid userId parameter');
+        expect(res.body.message).toBe('\"userId\" must be a number');
     });
 
     it('should return 400 for invalid userId parameter', async () => {
         const res = await request(app).get('/api/v1/userpokemons/-50');
         expect(res.statusCode).toBe(400);
-        expect(res.body.error).toBe('Invalid userId parameter');
+        expect(res.body.message).toBe('\"userId\" must be a positive number');
     });
 
     it('should return 400 for invalid userId parameter', async () => {
         const res = await request(app).get('/api/v1/userpokemons/0');
         expect(res.statusCode).toBe(400);
-        expect(res.body.error).toBe('Invalid userId parameter');
+        expect(res.body.message).toBe('\"userId\" must be a positive number');
     });
 
     it('should return Pokemons filtered by search term', async () => {
@@ -136,7 +136,7 @@ describe('userPokemon API Integration Test', () => {
     it('should return 400 for invalid search term', async () => {
         const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?search=12345`);
         expect(res.statusCode).toBe(400);
-        expect(res.body.error).toBe('Search query contains invalid characters. Only letters are allowed.');
+        expect(res.body.message).toBe('\"search\" with value \"12345\" fails to match the required pattern: /^[a-zA-Z]+$/');
     });
 
 });
