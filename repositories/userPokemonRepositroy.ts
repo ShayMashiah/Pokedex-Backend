@@ -21,17 +21,44 @@ export async function addNewPokemonToMyPokemons(userId: number, pokemonId: numbe
   return newPokemon;
 }
 
-export async function getAllPokemonsByUserId(userId: number, search?: string) {
-  const searchCondition = search?.trim()
-    ? Prisma.sql`AND p."nameEnglish" ILIKE '%' || ${search} || '%'`
-    : Prisma.empty;
+export async function getAllPokemonsByUserId(
+  userId: number,
+  sortBy: string,
+  order: "asc" | "desc",
+  search?: string,
+  limit: number = 10,
+  page: number = 1
+): Promise<{ data: Pokemon[]; totalCount: number }> {
+  const offset = (page - 1) * limit;
 
-  const pokemons = await prisma.$queryRaw<Pokemon[]>`
+  const searchClause = search
+    ? `AND LOWER(p."nameEnglish") LIKE LOWER('%${search.replace(/'/g, "''")}%')`
+    : "";
+
+  const query = `
     SELECT p.* FROM "UserPokemon" up
     JOIN "Pokemon" p ON up."pokemonId" = p.id
     WHERE up."userId" = ${userId}
-    ${searchCondition}
+    ${searchClause}
+    ORDER BY p."${sortBy}" ${order}
+    LIMIT ${limit}
+    OFFSET ${offset}
   `;
 
-  return pokemons;
+  const countQuery = `
+    SELECT COUNT(*)::int as count FROM "UserPokemon" up
+    JOIN "Pokemon" p ON up."pokemonId" = p.id
+    WHERE up."userId" = ${userId}
+    ${searchClause}
+  `;
+
+  const [pokemons, countResult] = await Promise.all([
+    prisma.$queryRawUnsafe<Pokemon[]>(query),
+    prisma.$queryRawUnsafe<{ count: number }[]>(countQuery),
+  ]);
+
+  return {
+    data: pokemons,
+    totalCount: countResult[0].count,
+  };
 }

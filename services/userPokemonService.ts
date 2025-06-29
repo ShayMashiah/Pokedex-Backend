@@ -2,6 +2,7 @@ import * as userPokemonRepository from '../repositories/userPokemonRepositroy';
 import { BadRequestError, NotFoundError } from '../handlers/errors';
 import * as userRepository from '../repositories/userRepositry';
 import * as pokemonRepository from '../repositories/pokemonRepository';
+import { Pokemon } from '../lib/types';
 
 export async function addNewPokemonToMyPokemons(userId: string, pokemonId: string) {
   const userIdNum = parseInt(userId, 10);
@@ -26,15 +27,35 @@ export async function addNewPokemonToMyPokemons(userId: string, pokemonId: strin
   return await userPokemonRepository.addNewPokemonToMyPokemons(userIdNum, pokemonIdNum);
 }
 
-export async function getAllPokemonsByUserId(userId: number, search?: string) {
+export async function getAllPokemonsByUserId(
+  userId: number,
+  sortBy: string = "id",
+  order: "asc" | "desc" = "asc",
+  search?: string,
+  limit: number = 10,
+  page: number = 1
+): Promise<{ data: Pokemon[]; totalCount: number }> {
   const user = await userRepository.findUserById(userId);
   if (!user) {
     throw new NotFoundError(`User with ID ${userId} not found.`);
   }
 
-  const pokemons = await userPokemonRepository.getAllPokemonsByUserId(userId, search);
-    if (!pokemons || pokemons.length === 0) {
-        throw new NotFoundError(`No Pokemons found for user with ID ${userId}.`);
-    }
-  return pokemons;
+  const result = await userPokemonRepository.getAllPokemonsByUserId(
+    userId,
+    sortBy,
+    order,
+    search,
+    limit,
+    page
+  );
+
+  if (!result.data || result.data.length === 0) {
+    throw new NotFoundError(
+      search
+        ? `No Pokemons found for user ${userId} matching '${search}'`
+        : `No Pokemons found for user ${userId}`
+    );
+  }
+
+  return result;
 }
