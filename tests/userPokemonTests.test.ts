@@ -57,9 +57,9 @@ describe('userPokemon API Integration Test', () => {
     it('should get all Pokemons for a user', async () => {
         const res = await request(app).get(`/api/v1/userpokemons/${testUserId}`);
         expect(res.statusCode).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeGreaterThan(0);
-        expect(res.body[0]).toHaveProperty('nameEnglish', 'Bulbasaur');
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBeGreaterThan(0);
+        expect(res.body.data[0]).toHaveProperty('nameEnglish', 'Bulbasaur');
     });
 
     it('should add another Pokemon to user collection', async () => {
@@ -75,10 +75,10 @@ describe('userPokemon API Integration Test', () => {
     it('should get all Pokemons for a user - now with more than one', async () => {
         const res = await request(app).get(`/api/v1/userpokemons/${testUserId}`);
         expect(res.statusCode).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeGreaterThan(1);
-        expect(res.body[0]).toHaveProperty('nameEnglish', 'Bulbasaur');
-        expect(res.body[1]).toHaveProperty('nameEnglish', 'Ivysaur');
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBeGreaterThan(1);
+        expect(res.body.data[0]).toHaveProperty('nameEnglish', 'Bulbasaur');
+        expect(res.body.data[1]).toHaveProperty('nameEnglish', 'Ivysaur');
     });
 
     it('should return 404 for non-existent user when getting Pokemons', async () => {
@@ -91,25 +91,84 @@ describe('userPokemon API Integration Test', () => {
         const newUser = await prisma.user.create({ data: {} });
         const res = await request(app).get(`/api/v1/userpokemons/${newUser.id}`);
         expect(res.statusCode).toBe(404);
-        expect(res.body.message).toBe(`No Pokemons found for user with ID ${newUser.id}.`);
+        expect(res.body.message).toBe(`No Pokemons found for user ${newUser.id}`);
     });
 
     it('should return 400 for invalid userId parameter', async () => {
         const res = await request(app).get('/api/v1/userpokemons/abc');
         expect(res.statusCode).toBe(400);
-        expect(res.body.error).toBe('Invalid userId parameter');
+        expect(res.body.message).toBe('\"userId\" must be a number');
     });
 
     it('should return 400 for invalid userId parameter', async () => {
         const res = await request(app).get('/api/v1/userpokemons/-50');
         expect(res.statusCode).toBe(400);
-        expect(res.body.error).toBe('Invalid userId parameter');
+        expect(res.body.message).toBe('\"userId\" must be a positive number');
     });
 
     it('should return 400 for invalid userId parameter', async () => {
         const res = await request(app).get('/api/v1/userpokemons/0');
         expect(res.statusCode).toBe(400);
-        expect(res.body.error).toBe('Invalid userId parameter');
+        expect(res.body.message).toBe('\"userId\" must be a positive number');
     });
+
+    it('should return Pokemons filtered by search term', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?search=Bulbasaur`);
+        expect(res.statusCode).toBe(200);
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBeGreaterThan(0);
+        expect(res.body.data[0]).toHaveProperty('nameEnglish', 'Bulbasaur');
+    });
+
+    it('should return not found error for search term that does not match any Pokemons', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?search=NonExistentPokemon`);
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe(`No Pokemons found for user ${testUserId} matching 'NonExistentPokemon'`);
+    });
+
+    it('should return all Pokemons for user when search term is empty', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?search=`);
+        expect(res.statusCode).toBe(200);
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBeGreaterThan(0);
+    });
+
+    it('should return 400 for invalid search term', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?search=12345`);
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe('\"search\" with value \"12345\" fails to match the required pattern: /^[a-zA-Z]+$/');
+    });
+
+    it('should return 400 for invalid limit parameter', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?limit=invalidLimit`);
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe('\"limit\" must be a number');
+    });
+    
+    it('should return 400 for negative limit parameter', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?limit=-5`);
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe('\"limit\" must be greater than or equal to 1');
+    });
+
+    it('should return 400 for max limit parameter', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?limit=40`);
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe('\"limit\" must be less than or equal to 30');
+    });
+
+    it('should return 400 for invalid page parameter', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?page=invalidPage`);
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe('\"page\" must be a number');
+    });
+
+    it('should return 400 for negative page parameter', async () => {
+        const res = await request(app).get(`/api/v1/userpokemons/${testUserId}?page=-2`);
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe('\"page\" must be greater than or equal to 1');
+    });
+
+    
 
 });
