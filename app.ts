@@ -4,7 +4,7 @@ import cors from 'cors';
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173', 
+  origin: ["http://localhost:5173", "http://localhost:6006"],
 }));
 app.use(express.json());
 app.use('/api/v1', routes); 
