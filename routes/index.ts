@@ -9,6 +9,7 @@ const routesList = [
   { path: '/pokemons', handler: pokemonRoutes },
   { path: '/users', handler: userRoutes },
   { path: '/userpokemons', handler: userPokemonRoutes },
+  
 ];
 
 routesList.forEach(({ path, handler }) => {
