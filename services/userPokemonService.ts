@@ -32,7 +32,7 @@ export async function getAllPokemonsByUserId(
   sortBy: string = "id",
   order: "asc" | "desc" = "asc",
   search?: string,
-  limit: number = 10,
+  limit: number = 0,
   page: number = 1
 ): Promise<{ data: Pokemon[]; totalCount: number }> {
   const user = await userRepository.findUserById(userId);

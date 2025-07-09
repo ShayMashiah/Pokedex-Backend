@@ -21,19 +21,22 @@ export async function addNewPokemonToMyPokemons(userId: number, pokemonId: numbe
   return newPokemon;
 }
 
+
 export async function getAllPokemonsByUserId(
   userId: number,
   sortBy: string,
   order: "asc" | "desc",
   search?: string,
-  limit: number = 10,
+  limit: number = 0,
   page: number = 1
 ): Promise<{ data: Pokemon[]; totalCount: number }> {
-  const offset = (page - 1) * limit;
+  const offset = limit > 0 ? (page - 1) * limit : 0;
 
   const searchClause = search
     ? `AND LOWER(p."nameEnglish") LIKE LOWER('%${search.replace(/'/g, "''")}%')`
     : "";
+
+  const limitOffsetClause = limit > 0 ? `LIMIT ${limit} OFFSET ${offset}` : "";
 
   const query = `
     SELECT p.* FROM "UserPokemon" up
@@ -41,8 +44,7 @@ export async function getAllPokemonsByUserId(
     WHERE up."userId" = ${userId}
     ${searchClause}
     ORDER BY p."${sortBy}" ${order}
-    LIMIT ${limit}
-    OFFSET ${offset}
+    ${limitOffsetClause}
   `;
 
   const countQuery = `
