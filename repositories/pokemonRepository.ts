@@ -5,10 +5,13 @@ export async function findAllPokemons(
   sortBy: string,
   order: 'asc' | 'desc',
   search?: string,
-  limit: number = 10,
-  page: number = 1
-): Promise<{ data: Pokemon[]; totalCount: number }>  {
-  const offset = (page - 1) * limit;
+  limit?: number,
+  page?: number
+): Promise<{ data: Pokemon[]; totalCount: number }> {
+  const isUnlimited = !limit || limit === 0;
+
+  const offset = page && limit ? (page - 1) * limit : 0;
+
   const searchClause = search
     ? `WHERE LOWER("nameEnglish") LIKE LOWER('%${search.replace(/'/g, "''")}%')`
     : '';
@@ -17,8 +20,7 @@ export async function findAllPokemons(
     SELECT * FROM "Pokemon"
     ${searchClause}
     ORDER BY "${sortBy}" ${order}
-    LIMIT ${limit}
-    OFFSET ${offset}
+    ${isUnlimited ? '' : `LIMIT ${limit} OFFSET ${offset}`}
   `;
 
   const countQuery = `
@@ -36,6 +38,7 @@ export async function findAllPokemons(
     totalCount: countResult[0].count,
   };
 }
+
 
 export async function findPokemonById(id: number) {
   const pokemon = await prisma.$queryRaw<Pokemon[]>`SELECT * FROM "Pokemon" WHERE id = ${id}`;
