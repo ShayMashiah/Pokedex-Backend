@@ -6,13 +6,21 @@ export async function getAllPokemons(
   sortBy: string = 'id',
   order: 'asc' | 'desc' = 'asc',
   search?: string,
-  limit: number = 10,
-  page: number = 1
+  limit?: number,
+  page?: number
 ): Promise<{ data: Pokemon[]; totalCount: number }> {
-  const result = await pokemonRepository.findAllPokemons(sortBy, order, search, limit, page);
+
+  const result = await pokemonRepository.findAllPokemons(
+    sortBy,
+    order,
+    search,
+    limit,
+    page
+  );
 
   return result;
 }
+
 
 export async function getPokemonById(id: number): Promise<Pokemon> {
   const pokemon = await pokemonRepository.findPokemonById(id);
