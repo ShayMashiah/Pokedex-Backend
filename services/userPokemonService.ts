@@ -49,13 +49,5 @@ export async function getAllPokemonsByUserId(
     page
   );
 
-  if (!result.data || result.data.length === 0) {
-    throw new NotFoundError(
-      search
-        ? `No Pokemons found for user ${userId} matching '${search}'`
-        : `No Pokemons found for user ${userId}`
-    );
-  }
-
   return result;
 }

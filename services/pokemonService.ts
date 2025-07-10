@@ -11,10 +11,6 @@ export async function getAllPokemons(
 ): Promise<{ data: Pokemon[]; totalCount: number }> {
   const result = await pokemonRepository.findAllPokemons(sortBy, order, search, limit, page);
 
-  if (!result.data || result.data.length === 0) {
-    throw new NotFoundError(search ? `No Pokémons found matching '${search}'` : 'No Pokémons found');
-  }
-
   return result;
 }
 
