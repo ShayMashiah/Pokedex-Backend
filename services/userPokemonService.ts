@@ -32,7 +32,7 @@ export async function getAllPokemonsByUserId(
   sortBy: string = "id",
   order: "asc" | "desc" = "asc",
   search?: string,
-  limit: number = 10,
+  limit: number = 0,
   page: number = 1
 ): Promise<{ data: Pokemon[]; totalCount: number }> {
   const user = await userRepository.findUserById(userId);
@@ -48,14 +48,6 @@ export async function getAllPokemonsByUserId(
     limit,
     page
   );
-
-  if (!result.data || result.data.length === 0) {
-    throw new NotFoundError(
-      search
-        ? `No Pokemons found for user ${userId} matching '${search}'`
-        : `No Pokemons found for user ${userId}`
-    );
-  }
 
   return result;
 }

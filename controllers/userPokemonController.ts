@@ -31,7 +31,8 @@ export async function getAllPokemonsByUserId(
   const search = req.query.search as string | undefined;
   const sortBy = (req.query.sortBy as string) || "id";
   const order = (req.query.order as "asc" | "desc") || "asc";
-  const limit = req.query.limit ? +req.query.limit : 10;
+
+  const limit = req.query.limit ? +req.query.limit : 0; 
   const page = req.query.page ? +req.query.page : 1;
 
   try {
@@ -43,7 +44,8 @@ export async function getAllPokemonsByUserId(
         limit,
         page
       );
-      const totalPages = Math.ceil(totalCount / limit);
+
+      const totalPages = limit > 0 ? Math.ceil(totalCount / limit) : 1;
 
       res.json({
         data,
@@ -58,7 +60,7 @@ export async function getAllPokemonsByUserId(
       }
       console.error("Error in getAllPokemonsByUserId:", error);
       res.status(500).json({ message: "Internal Server Error" });
-    }
+  }
 }
 
 export default {addNewPokemonToMyPokemons,getAllPokemonsByUserId};

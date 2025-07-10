@@ -66,4 +66,5 @@ router.post('/', validate(userPokemonSchema), userPokemonController.addNewPokemo
  */
 router.get("/:userId", validateParams(paramsSchema), userPokemonController.getAllPokemonsByUserId);
 
+
 export default router;
